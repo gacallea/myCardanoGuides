@@ -1,17 +1,12 @@
 <!-- _coverpage.md -->
 
-# My Shelley Notes <small>0.1</small>
+# Insalada Guides For Pool Operators
 
-> A collection of notes and random files from my Shelley Pioneer Journey
+> A collection of guides to help pool operators run their pools
 
 - Install, configure, manage, automate, and monitor a Cardano pool
 
-[GitHub](https://github.com/gacallea/myShelleyNotes)
-[Get Started](#my-shelley-pioneer-notes)
-
-<!-- background image -->
-
-<!-- ![](_media/bg.png) -->
+[Get Started](#guides-for-cardano-pool-operators)
 
 <!-- background color -->
 
