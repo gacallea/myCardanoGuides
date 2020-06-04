@@ -1061,12 +1061,14 @@ You need to install [Prometheus](https://prometheus.io/) from the official Ubunt
 
 ```bash
 wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+```
+
+```bash
 echo "deb https://packages.grafana.com/oss/deb stable main" > /etc/apt/sources.list.d/grafana.list
 ```
 
 ```bash
-apt-get update
-apt-get install prometheus prometheus-alertmanager prometheus-node-exporter nginx certbot python3-pip python3-certbot-nginx grafana
+apt-get update && apt-get install -y prometheus prometheus-alertmanager prometheus-node-exporter nginx certbot python3-pip python3-certbot-nginx grafana
 ```
 
 ### Prometheus ###
@@ -1245,20 +1247,23 @@ Here's Namecheap guide as a pointer: [How do I set up host records for a domain?
 dig grafana.example.com +short a
 ```
 
-#### Firewalld Configuration ####
+#### Firewall Configuration ####
 
 In order for the next steps to work, and to be able to remotely connect to your monitoring, the firewall need to be open for both port ```80``` and ```443```. Issue these commands to do so:
 
 ```bash
-firewall-cmd --permanent --zone=public --add-port=80/tcp
-firewall-cmd --permanent --zone=public --add-port=443/tcp
-firewall-cmd --complete-reload
+ufw allow 80
+ufw allow 443
 ```
 
-To verify that everything has worked, issue the following and check for the added ports: ```80/tcp``` and ```443/tcp```.
+```bash
+ufw reload
+```
+
+To verify that everything has worked, issue the following:
 
 ```bash
-firewall-cmd --list-all
+ufw status verbose
 ```
 
 #### Nginx Reverse Proxy ####
@@ -1287,7 +1292,7 @@ server {
 }
 
 server {
-  listen 443 ssl http2;
+  listen 443;
   server_name grafana.example.com;
 
   location / {
@@ -1303,7 +1308,13 @@ Enable it by linking it to sites-available:
 
 ```bash
 cd /etc/nginx/sites-enabled/
+```
+
+```bash
 ln -sf ../sites-available/grafana
+```
+
+```bash
 systemctl restart nginx.service
 ```
 
