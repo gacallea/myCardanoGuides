@@ -1,5 +1,17 @@
 # ITN1 Cluster #
 
+This guide builds upon, extends, and supersedes the [Not Another Cardano Guide](NACG.md). ```NACG``` focused on a single Jormungandr node. ```ITN1 Cluster``` helps you install, configure, automate and manage a three nodes cluster pool **on the same server**.
+
+Depending on your server resources, you may want to run less (or more) nodes. Three nodes are used here, because it's what [SALAD](https://insalada.io) runs on the ITN, and have been tested in production. Better still, you could run each node on its own dedicated VPS instance, and scale up to as much as you can afford. That would require modifications to this guide and to the scripts. You are free to experiment. As much as I would love to expand the guide to multiple VPS or Docker, I can't afford to test those scenarios.
+
+Having said that, running a *three-Jormungandr-nodes cluster* **does not mean** that you'd have three leaders running at all times. That would cause a number of issues to the network. Since you want to avoid [forks](https://pooltool.io/health), a single leader candidate node will be active at any given time. Each node starts as leader, and it's demoted on some conditions. This *multi-leader strategy* is used by many operators and, as of now, it's the best way to run multi-nodes. At least until [*the passive strategy*](https://github.com/input-output-hk/jormungandr/issues/1551) is possible.
+
+Lastly, both this guide and installing, configuring, and managing a cluster requires a certain degree of Linux skills. And familiarity with its shell, and its commands. And that you have, at least, some experience in managing a a Linux distro.
+
+## Assumptions ##
+
+It would be impossible to cover every single scenario that a user could come up with, therefore this guide makes some assumptions during the process of installation and in the provided set of scripts. Examples and default values are provided, both in the guide and in the configuration files. It would still be possible for you to change the values of course. However, if unsure, sticking with the provided defaults is a safe choice. Should you decide to make changes, they should adhere to the same underlying logic of the default values. Otherwise the installation could fail or be troublesome.
+
 ## Register Your Pool ##
 
 Before you can proceed with the cluster installation and configuration, it is necessary to register your pool ticker with the [Cardano Foundation Registry](https://github.com/cardano-foundation/incentivized-testnet-stakepool-registry). Follow [IOHK](https://github.com/input-output-hk)'s [**guide**](https://github.com/input-output-hk/shelley-testnet/blob/master/docs/stake_pool_operator_how_to.md) and use their [QA Team](https://github.com/input-output-hk/jormungandr-qa) [**scripts**](https://github.com/input-output-hk/jormungandr-qa/tree/master/scripts), to do that. The resulting ```node-secret.yaml``` and a registered pool ticker are requirements to proceed with the installation of the cluster. **Make sure to backup the generated files and keys when the IOHK guide instructs you to do so. They are vital to run a pool and to get your rewards, in due time**.
@@ -30,26 +42,20 @@ The following scripts are provided to take care of the pool installation, config
 
 ### itn1 prepare ###
 
-While you follow this guide, ```itn1_prepare``` will help you setup your cluster. It comes with solid default settings, and requires minimal configuration. Whenever you see the following *tag*, **you must run ```itn1_prepare``` with the provided commands**.
+While you follow this guide, ```itn1_prepare``` will help you setup your cluster. It comes with solid default settings, and requires minimal configuration. Whenever you see the following tag, **you must run ```itn1_prepare``` with the provided commands**.
 
 > **itn1_prepare**
 
 ## Preliminary Steps ##
 
-**IMPORTANT: any command and action in this guide needs to run as ```root```.** ```sudo``` is fine too, in most of the cases, but you **must prepend it** to commands where it's needed. Debian doesn't come with ```sudo``` preinstalled, install it now **with root**:
-
-```bash
-apt update
-apt install sudo
-```
+**IMPORTANT: any command and action in this guide needs to run as ```root```.** ```sudo``` is fine too, in most of the cases, but you **must prepend it** to commands where it's needed.
 
 ### clone repo ###
 
-First things first. You need to clone this very repository in order to use ```itn1_prepare``` to set up your cluster. And, upon successful configuration, to use the scripts to help you manage it. Debian doesn't come with ```git``` preinstalled, install it now:
+First things first. You need to clone this very repository in order to use ```itn1_prepare``` to set up your cluster. And, upon successful configuration, to use the scripts to help you manage it. Ubuntu doesn't come with ```git``` preinstalled, install it now:
 
 ```bash
-apt update
-apt install git
+apt-get update && apt-get install -y git
 ```
 
 Now clone the repository (**it is crucial to this guide procedures and tools to clone the repo exactly like this!!!**):
@@ -77,7 +83,7 @@ Edit ```/root/itn1_cluster_repo/itn1_cluster/scripts/itn1_config``` with your fa
 1. ```RECEIVER_ACCOUNT```: this is the address (created [here](https://bit.ly/2vZWz6E)) associated with your pool.
 2. ```POOL_TICKER```: the pool ticker as registered on the Cardano Foundation Registry.
 3. ```ITN1_PUBLIC_IP_ADDR```: the server public IP address, associated with your pool in the network.
-4. ```MY_POOL_ID```: the pool ID as on the Shelley explorer. E.g: [INSL](https://shelleyexplorer.cardano.org/en/stake-pool/93756c507946c4d33d582a2182e6776918233fd622193d4875e96dd5795a348c/). **Your ```HASH``` value would be it.**
+4. ```MY_POOL_ID```: the pool ID as on the Shelley explorer. E.g: [SALAD](https://shelleyexplorer.cardano.org/en/stake-pool/93756c507946c4d33d582a2182e6776918233fd622193d4875e96dd5795a348c/). **Your ```HASH``` value would be it.**
 5. ```MY_USER_ID```: the user ID from our Pooltool [account profile](https://pooltool.io/profile). **Your API ID would be it.**
 
 **IMPORTANT: create a Pooltool account now if you don't have it, claim your pool on Pooltool, and fill the above variables. Once you have configured the above, you can proceed with the guide.**
@@ -188,13 +194,13 @@ This is **your main non-root user** that you will be using to ```ssh``` into the
 
 **If you already have such user** that you actively ```ssh``` and ```sudo``` with, you can skip creating one, but make sure you add ```<YOUR_EXISTING_USER>``` to ```sudo``` and ```ssh-users``` groups.
 
-For a new user run:
+For a **new** user run:
 
 ```bash
 useradd -c "user to ssh and sudo" -m -d /home/<YOUR_SYSTEM_USER> -s /bin/bash -G sudo,ssh-users <YOUR_SYSTEM_USER>
 ```
 
-For an existing user run:
+For an **existing** user run:
 
 ```bash
 usermod -aG sudo,ssh-users <YOUR_EXISTING_USER>
@@ -248,27 +254,11 @@ Some of the installed tools are used in my scripts, some others serve system adm
 - ```ccze``` is for coloring commands output
 - ```dateutils``` is used for date related calculations in my scripts
 - ```fail2ban``` to keep script kiddies at bay
-- ```firewalld``` is used for ```nftables``` configuration
 - ```htop``` is a must have ```top``` on steroids
 - ```jq``` used in my scripts and if you want to send your stats to [PoolTool.io](https://pooltool.io/health)
 - ```ripgrep``` is used in my scripts
 - ```speedtest-cli``` in case you need a good speed test for your server
 - ```musl``` is a [C library](https://wiki.musl-libc.org/functional-differences-from-glibc.html), in case you want to run the [musl](https://musl.libc.org/) version of ```jormungandr```
-
-Make sure that the ```backports``` repository is enabled in ```/etc/apt/sources.list```. Here's a complete ```sources.list``` file:
-
-```bash
-deb http://deb.debian.org/debian buster main
-deb-src http://deb.debian.org/debian buster main
-
-deb http://security.debian.org/ buster/updates main
-deb-src http://security.debian.org/ buster/updates main
-deb http://deb.debian.org/debian buster-updates main
-deb-src http://deb.debian.org/debian buster-updates main
-
-deb http://deb.debian.org/debian buster-backports main
-deb-src http://deb.debian.org/debian buster-backports main
-```
 
 > **itn1_prepare**
 
@@ -277,8 +267,6 @@ If you have accidentally changed directory, run:
 ```bash
 cd /root/itn1_cluster_repo/itn1_cluster/scripts/itn1_helpers/
 ```
-
-Once you have enabled backports in your  ```/etc/apt/sources.list``` file, you can run:
 
 ```bash
 ./itn1_prepare --install-software
@@ -290,11 +278,21 @@ You should stick [to the latest stable release](https://github.com/input-output-
 
 ```bash
 curl -sLOJ https://github.com/input-output-hk/jormungandr/releases/download/v0.8.19/jormungandr-v0.8.19-x86_64-unknown-linux-gnu-generic.tar.gz
+```
+
+```bash
 tar xzvf jormungandr-v0.8.19-x86_64-unknown-linux-gnu-generic.tar.gz
-mv jcli /usr/local/bin/
-mv jormungandr /usr/local/bin/
-chmod +x /usr/local/bin/jcli
-chmod +x /usr/local/bin/jormungandr
+```
+
+```bash
+mv jormungandr jcli /usr/local/bin/
+```
+
+```bash
+chmod +x /usr/local/bin/jormungandr /usr/local/bin/jcli
+```
+
+```bash
 chown -R root\: /usr/local/bin/
 ```
 
@@ -302,46 +300,35 @@ chown -R root\: /usr/local/bin/
 
 To configure your system, you'll be using a mix of configuration files and ```itn1_prepare```. Some files were originally used in other great guides, credits and links provided. Always remember to **adapt them to your system**,  where it's needed.
 
-When it comes to the firewall, this guide focuses on ```nftables``` and ```firewalld``` instead of ```iptables``` and ```ufw```. For two simple reasons: ```nftables``` is the successor of ```iptables```, and it is the [default on Debian](https://wiki.debian.org/DebianFirewall). As far the firewall front-end goes, ```firewall-cmd``` supports ```nftables```. This is why it is used in this guide, and ```ufw``` just doesn't support ```nftables``` yet.
+### configure the firewall ###
 
-### configure backend ###
+A controversial note, first: believe it or not, if your server is only running ```sshd``` and ```jormungandr``` a firewall is not really necessary. Both services need an open port, the ```jcli``` REST API runs locally, and there's not other running service to externally attack. You could skip the firewall configuration, change the ```sshd``` port and install ```fail2ban```; that would be good enough. However, setting up a firewall is something this guide will help you do. This guide will help you configure a firewall with ```ufw```.
 
-By default Debian doesn't have any front-end installed nor a firewall configured, and the underlying settings for ```iptables``` should already be pointing to the ```nft``` backend. To make sure that your system does point to **```/usr/sbin/iptables-nft```**; run the following, and select "```/usr/sbin/iptables-nft 20 auto mode```".
-
-```bash
-update-alternatives --config iptables
-```
-
-### configure firewalld ###
-
-Believe it or not, if your server is only running ```sshd``` and ```jormungandr``` a firewall is not really necessary. Both services need an open port, the ```jcli``` REST API runs locally, and there's not other running service to externally attack. You could skip the firewall configuration, change the ```sshd``` port and install ```fail2ban```; that would be good enough.
-
-Having said that, setting up a firewall is something this guide will help you do. First things first, let's make ```firewalld``` use the ```nftables``` backend, instead of ```iptables```. You only need to change the backend to ```nftables``` and turn logging for drops on. **Everything else must stay untouched**.
-
-Edit ```/etc/firewalld/firewalld.conf```
+To be on the safe side, let's disable the ```ufw``` service first:
 
 ```bash
-FirewallBackend=nftables
-LogDenied=all
+ufw disable
 ```
 
-#### reboot ####
-
-To ditch ```iptables``` and switch to ```nftables``` completely, you need to ```reboot``` the server. **If ```sshd``` still runs on port ```22``` as this guide assumes, you'll be fine.**
+This should not be necessary, as it is usually the default settings. To be on the safe side, let's set defaults for incoming/outgoing ports:
 
 ```bash
-reboot
+ufw default deny incoming
 ```
-
-#### sshd port ####
-
-Once your server has rebooted, ssh back in. It is now time to decide the port for your ```sshd``` server. This guide will bind ```sshd``` to ```5269``` as an example, and to provide a default settings that you may want to keep. Once you custom ```ssh``` port (hereby ```5269```) is configured in the ```sshd_config``` file and ```sshd``` restarted, you will remove the default ```ssh``` port (```22```) from the ```firewalld``` rules.
 
 ```bash
-firewall-cmd --permanent --zone=public --add-port=5269/tcp
+ufw default allow outgoing
 ```
 
-#### itn1 cluster ports ####
+It is now time to decide the port for your ```sshd``` server. This guide will bind ```sshd``` to ```5269``` as an example, and to provide a default settings that you may want to keep. Once you custom ```ssh``` port (hereby ```5269```) is configured in the ```sshd_config``` file and ```sshd``` restarted, you will remove the default ```ssh``` port (```22```) from the ```ufw``` rules.
+
+```bash
+ufw limit 22
+```
+
+```bash
+ufw limit 5269
+```
 
 > **itn1_prepare**
 
@@ -351,64 +338,21 @@ Because the ports of the ITN1 Cluster vary based on users' configurations, ```it
 ./itn1_prepare --set-firewall
 ```
 
-#### make sure ####
-
-Once the ```itn1_prepare``` command has configured your firewall, it will run the following and present you the new ruleset.
+Now that all the necessary rules have been set, let's enable the firewall and double check the rules:
 
 ```bash
-firewall-cmd --list-all
+ufw enable
 ```
 
-If you left the defaults values in ```itn1_config``` for the number of nodes and their public ports, it should show the following:
-
 ```bash
-public
-  target: default
-  icmp-block-inversion: no
-  interfaces:
-  sources:
-  services: dhcpv6-client ssh
-  ports: 5269/tcp 3001/tcp 3002/tcp 3003/tcp
-  protocols:
-  masquerade: no
-  forward-ports:
-  source-ports:
-  icmp-blocks:
-  rich rules:
-```
-
-#### confirm ####
-
-You should have an empty ```iptables``` ruleset. Run the following:
-
-```bash
-iptables -nL
-```
-
-The above should return:
-
-```bash
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-```
-
-The following should return your new ```nftables``` rules:
-
-```bash
-nft list ruleset
+ufw status verbose
 ```
 
 ### configure sshd ###
 
 You'll be enabling some additional restrictions, and disabling some features that are enabled by default. Like tunneling and forwarding. [Read why](https://www.ssh.com/ssh/tunneling#ssh-tunneling-in-the-corporate-risk-portfolio) it is bad to leave SSH tunneling on. Some guides suggest to tunnel into your remote server for monitoring purposes. This is bad practice, and a security risk. Make sure you have the following configured in ```/etc/ssh/sshd_config```; everything else can be commented out.
 
-**IMPORTANT:** your ```Port``` value must match whatever port you have picked up in ```firewalld```, this guide uses ```5269```.
+**IMPORTANT:** your ```Port``` value must match whatever port you have picked up in ```ufw```, this guide uses ```5269```.
 
 ```bash
 Port 5269
@@ -451,42 +395,35 @@ Restart the ```sshd``` server, and ```ssh``` into the server from another termin
 systemctl restart sshd.service
 ```
 
-**Make sure** you can ```ssh``` into your server with the new configuration, disable the ```ssh``` service, and reload ```firewalld```:
+Make **absolutely sure** you can ```ssh``` into your server with the newly configured port ```5269```, delete the ```ssh``` (**port ```22```**) rule, and reload the ```ufw``` service.
+
+To delete a rule from ```ufw```, first list the rules numbered:
 
 ```bash
-firewall-cmd --permanent --zone=public --remove-service=ssh
+ufw status numbered
+```
+
+Then proceed to delete the corresponding rule (**replace 1 with the actual number you get from the above numbered list!!!**):
+
+```bash
+ufw delete 1
 ```
 
 ```bash
-firewall-cmd --complete-reload
+ufw reload
 ```
 
-### configure fail2ban ###
+### check fail2ban ###
 
-While ```fail2ban``` doesn't offer perfect security - [*security is a process, not a product*](https://www.schneier.com/essays/archives/2000/04/the_process_of_secur.html) - it serves its purpose. The default configuration is generally good enough. Usually, one would copy the ```jail``` configuration file, add the server IP to ```ignoreip```, change the ban time-related parameters if he wants to, enable the ```sshd``` jail, restart the service, and be good to go.
-
-However, since this guide use ```firewalld```, ```fail2ban``` has to use that too. Copy the provided ```jail.conf``` file:
+While ```fail2ban``` doesn't offer perfect security - [*security is a process, not a product*](https://www.schneier.com/essays/archives/2000/04/the_process_of_secur.html) - it serves its purpose. The default ```fail2ban``` configuration is generally good enough, to check that the service is active and a ssh jail configured, run:
 
 ```bash
-cp /root/itn1_cluster_repo/files/jail.local /etc/fail2ban/jail.local
-```
-
-Edit ```/etc/fail2ban/jail.local``` to add your IP address to the existing ```ignoreip``` entry:
-
-```bash
-ignoreip = 127.0.0.1/8 ::1 <YOUR_SERVER_PUBLIC_IP>
-```
-
-That's it. Now restart and make sure that ```fail2ban``` is properly running, with these two commands:
-
-```bash
-systemctl restart fail2ban.service
 fail2ban-client status
 ```
 
 It should return:
 
-```bash
+```text
 Status
 |- Number of jail:      1
 `- Jail list:   sshd
@@ -1028,19 +965,19 @@ Usage: 'itn1_cluster command [options]'
         --demote-leader                         int1 int2 || --all                  remove the 'int2' leader ID from a single node; '--all' for all nodes
         --swap-leader                           int1 int2                           swap leadership from node 'int1' to node 'int2'; be very careful with this one....
 
-        --account-balance                       int1                                check INSL account balance
-        --current-stakes                        int1                                check INSL current stakes balance
-        --live-stakes                           int1                                check INSL live stakes balance
-        --epoch-stakes                          int1 int2                           check INSL specific epoch 'int2' stakes balance
-        --epoch-rewards                         int1 int2                           check INSL specific epoch 'int2' rewards balance
-        --rewards-balance                       int1                                check INSL rewards balance
-        --rewards-history                       int1 int2                           check INSL rewards history 'int2' of the length last epoch(s) from tip
+        --account-balance                       int1                                check SALAD account balance
+        --current-stakes                        int1                                check SALAD current stakes balance
+        --live-stakes                           int1                                check SALAD live stakes balance
+        --epoch-stakes                          int1 int2                           check SALAD specific epoch 'int2' stakes balance
+        --epoch-rewards                         int1 int2                           check SALAD specific epoch 'int2' rewards balance
+        --rewards-balance                       int1                                check SALAD rewards balance
+        --rewards-history                       int1 int2                           check SALAD rewards history 'int2' of the length last epoch(s) from tip
 
-        --leader-logs                           int1                                show the full leader logs for INSL
-        --scheduled-slots                       int1                                check how many slots is INSL node scheduled for
-        --scheduled-dates                       int1                                show which scheduled DATEs in this epoch for INSL
-        --scheduled-times                       int1                                show which scheduled TIMEs in this epoch for INSL
-        --scheduled-next                        int1                                show when is the NEXT scheduled block for INSL node
+        --leader-logs                           int1                                show the full leader logs for SALAD
+        --scheduled-slots                       int1                                check how many slots is SALAD node scheduled for
+        --scheduled-dates                       int1                                show which scheduled DATEs in this epoch for SALAD
+        --scheduled-times                       int1                                show which scheduled TIMEs in this epoch for SALAD
+        --scheduled-next                        int1                                show when is the NEXT scheduled block for SALAD node
 
         --live-logs                             int1                                show logs of a single node
         --last-logs                             int1 int2                           show last 'int2' lines of logs for a single node
@@ -1052,7 +989,7 @@ Usage: 'itn1_cluster command [options]'
         --last                                  int1 || --all                       show when 'int1' node was last restarted; '--all' for all nodes
 
         --node-stats                            int1                                show 'int1' NODE stats
-        --pool-stats                            int1                                show INSL pool stats
+        --pool-stats                            int1                                show SALAD pool stats
         --net-stats                             int1                                show 'int1' NETWORK stats
         --sys-stats                             int1                                show a TOP snapshot of 'int1' node
         --date-stats                            int1 int2 int3                      show 'int3' received block announcement in 'int2' lines of logs for 'int1' node
@@ -1065,7 +1002,7 @@ Usage: 'itn1_cluster command [options]'
 
         --check-peers                                                               check ping to trusted peers with tcpping
         --connected-ips                         int1 int2                           count how many 'int2' connections to a specific IP
-        --is-quarantined                        int1                                check if INSL public IP is quarantined (or was quarantined recently)
+        --is-quarantined                        int1                                check if SALAD public IP is quarantined (or was quarantined recently)
         --quarantined-ips                       int1                                show all quarantined IPs
         --quarantined-ips-count                 int1                                count of all quarantined IPs
 
@@ -1120,7 +1057,7 @@ In this section you will configure and automate Prometheus and Grafana *to be th
 
 ### Install Monitoring ###
 
-You need to install [Prometheus](https://prometheus.io/) from the official Debian repository, and [Grafana](https://grafana.com/) from the [repository they provide](https://grafana.com/docs/grafana/latest/installation/debian/). You'll also install and configure [Nginx](https://www.nginx.com/) and [EFF](https://eff.org/)'s [Certbot](https://certbot.eff.org/) to automate the process of creating and managing [Let's Encrypt](https://letsencrypt.org/) certificates. Nginx is used to [reverse-proxy](https://en.wikipedia.org/wiki/Reverse_proxy) to Grafana, and the [SSL encryption](https://www.ssl.com/faqs/faq-what-is-ssl/) is necessary to securely connect to and peruse your remote monitoring, [while keeping safe from prying eyes](https://www.youtube.com/watch?v=-enHfpHMBo4). To install the needed software, use the following commands:
+You need to install [Prometheus](https://prometheus.io/) from the official Ubuntu repository, and [Grafana](https://grafana.com/) from the [repository they provide](https://grafana.com/docs/grafana/latest/installation/debian/). You'll also install and configure [Nginx](https://www.nginx.com/) and [EFF](https://eff.org/)'s [Certbot](https://certbot.eff.org/) to automate the process of creating and managing [Let's Encrypt](https://letsencrypt.org/) certificates. Nginx is used to [reverse-proxy](https://en.wikipedia.org/wiki/Reverse_proxy) to Grafana, and the [SSL encryption](https://www.ssl.com/faqs/faq-what-is-ssl/) is necessary to securely connect to and peruse your remote monitoring, [while keeping safe from prying eyes](https://www.youtube.com/watch?v=-enHfpHMBo4). To install the needed software, use the following commands:
 
 ```bash
 wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
@@ -1128,8 +1065,8 @@ echo "deb https://packages.grafana.com/oss/deb stable main" > /etc/apt/sources.l
 ```
 
 ```bash
-apt update
-apt install prometheus prometheus-alertmanager prometheus-node-exporter nginx certbot python3-pip python3-certbot-nginx grafana
+apt-get update
+apt-get install prometheus prometheus-alertmanager prometheus-node-exporter nginx certbot python3-pip python3-certbot-nginx grafana
 ```
 
 ### Prometheus ###
@@ -1413,9 +1350,9 @@ It's time to tell Grafana to use Prometheus. Connect to Grafana by browsing to `
 
 Now browse to ```https://grafana.example.com/datasources```, and search and install the Prometheus datasource. If you need help, refer to the [official documentation](https://grafana.com/docs/grafana/latest/features/datasources/prometheus/#adding-the-data-source). **Make it the default data source, and add the localhost information as well.**
 
-![datasource](images/datasource.png)
+![datasource](_images/datasource.png)
 
-![editprometheus](images/promedit.png)
+![editprometheus](_images/promedit.png)
 
 #### Installing Dashboards ####
 
@@ -1430,9 +1367,9 @@ No need to reinvent the wheel here, please follow the official documentation if 
 
 Here's Insalada dashboards examples:
 
-![node exporter](images/node-grafana.png)
+![node exporter](_images/node-grafana.png)
 
-![itn cluster](images/jorm-grafana.png)
+![itn cluster](_images/jorm-grafana.png)
 
 ## More Tools ##
 
@@ -1504,7 +1441,7 @@ Organic Design has a great deal of useful information on [Cardano](https://organ
 
 #### ADAStat ####
 
-[ADAStat](https://adastat.net/en) offers a minimalistic and elegant approach to stats for the explorer and pools. It is accurate and a pleasure to use and look at. Here's INSL as an example: [Insalada Stake Pool](https://adastat.net/en/pool/93756c507946c4d33d582a2182e6776918233fd622193d4875e96dd5795a348c) statistics.
+[ADAStat](https://adastat.net/en) offers a minimalistic and elegant approach to stats for the explorer and pools. It is accurate and a pleasure to use and look at. Here's SALAD as an example: [Insalada Stake Pool](https://adastat.net/en/pool/93756c507946c4d33d582a2182e6776918233fd622193d4875e96dd5795a348c) statistics.
 
 #### ADAtainement ####
 
@@ -1522,4 +1459,4 @@ In the same fashion to the above-mentioned Pool Tool, [**Adapools**](https://ada
 
 Last but not least, should you need help at any stage of your pool operator journey, join the '[Cardano Shelley Testnet & StakePool Best Practice Workgroup](https://t.me/CardanoStakePoolWorkgroup)' group on Telegram; it is packed with knowledge, and great and helpful people.
 
-Insalada Stake Pool also has a [Telegram chat](https://t.me/insaladaPool), should you want to follow us and ask anything about INSL :)
+Insalada Stake Pool also has a [Telegram chat](https://t.me/insaladaPool), should you want to follow us and ask anything about SALAD :)
