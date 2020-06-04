@@ -24,6 +24,6 @@ It would be impossible to cover every single scenario that a user could come up 
 
 Updates are implemented only after they have been tested on my pool. Sections are added to the guide as needed. The same goes for useful features in the pool management scripts. Follow [insaladaPool](https://twitter.com/insaladaPool) for updates.
 
-### Contributions ###
+## Contributions ##
 
 **If you have comments, issues, changes, and suggestions, please file an issue on the respective Github pages**. Any insight is valuable and will be considered for integration and improvements. If these resources help you in any way, consider [buying me a beer](https://seiza.com/blockchain/address/Ae2tdPwUPEZHwvuNhu7qGeBcZBTQAwL2SUA49T6CubbQzoxgxyffYJ8VvcW).
