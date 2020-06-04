@@ -1,4 +1,4 @@
-# Shelley Pioneers Exercises and Notes #
+# Shelley Main-net Pool #
 
 ## Prepare Your System ##
 
@@ -65,6 +65,8 @@ useradd -c "user to run cardano node" -m -d /home/cardano-node -s /sbin/nologin 
 passwd -d cnode
 ```
 
+## Install Cardano Node Software ##
+
 ### compile and install cardano-node ###
 
 At the minute, the only way to install the ```cardano-node``` and the ```cardano-cli``` software components necessary to run a stake pool on Shelley is to compile them. Compilation can be troublesome and lead to issues. To avoid any complications and always get solid results and the right binaries, I provide a Docker build environment to build against the latest version/tag as in [the official documentation to build a node](https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/build.md).
@@ -91,7 +93,7 @@ docker-compose up --build -d
 #### copy the binaries to your host ####
 
 ```bash
-docker container cp build_bins_1:/usr/local/bin cardano-bins/
+docker container cp build_builder_1:/usr/local/bin cardano-bins/
 ```
 
 #### scp the binaries to your nodes ####
@@ -108,10 +110,10 @@ scp cardano-bins/bin/cardano-node relay-server:/usr/local/bin/
 scp cardano-bins/bin/cardano-cli relay-server:/usr/local/bin/
 ```
 
-#### cardano-node home dir ####
+#### cardano-relay home dir ####
 
 ```bash
-root@htn-cardano-node:/home/cardano-node# tree /home/cardano-node/
+root@htn-cardano-relay:~# tree /home/cardano-node/
 /home/cardano-node/
 ├── cardano-node.env
 ├── config
@@ -123,7 +125,7 @@ root@htn-cardano-node:/home/cardano-node# tree /home/cardano-node/
 └── socket
 ```
 
-#### cardano-node.env ####
+#### cardano-relay environment ####
 
 ```bash
 CONFIG="./config/ff-config.json"
@@ -134,7 +136,7 @@ HOSTADDR="0.0.0.0"
 PORT="3000"
 ```
 
-#### cardano-node.service ####
+#### cardano-relay.service ####
 
 ```bash
 [Unit]
@@ -161,4 +163,104 @@ Group=cnode
 
 [Install]
 WantedBy=multi-user.target
+```
+
+#### cardano-node home dir ####
+
+```bash
+root@htn-cardano-node:~# tree /home/cardano-node/
+/home/cardano-node/
+├── cardano-node.env
+├── config
+│   ├── ff-config.json
+│   ├── ff-genesis.json
+│   └── ff-topology.json
+├── db
+├── keys
+│   ├── kes.skey
+│   ├── opcert
+│   └── vrf.skey
+├── logs
+└── socket
+```
+
+#### cardano-node environment ####
+
+```bash
+CONFIG="./config/ff-config.json"
+TOPOLOGY="./config/ff-topology.json"
+DBPATH="./db/"
+SOCKETPATH="./socket/core-node.socket"
+HOSTADDR="0.0.0.0"
+PORT="3000"
+KES_SK="./keys/kes.skey"
+VRF_SK="./keys/vrf.skey"
+OPCERT="./keys/opcert"
+```
+
+#### cardano-node.service ####
+
+```bash
+[Unit]
+Description=Shelley Pioneer Pool
+After=multi-user.target
+
+[Service]
+Type=simple
+EnvironmentFile=/home/cardano-node/cardano-node.env
+ExecStart=/usr/local/bin/cardano-node run --config $CONFIG --topology $TOPOLOGY --database-path $DBPATH --socket-path $SOCKETPATH --host-addr $HOSTADDR --port $PORT  --shelley-kes-key $KES_SK --shelley-vrf-key $VRF_SK --shelley-operational-certificate $OPCERT
+KillSignal = SIGINT
+RestartKillSignal = SIGINT
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=cardano-node
+
+LimitNOFILE=65536
+
+Restart=on-failure
+RestartSec=15s
+WorkingDirectory=~
+User=cnode
+Group=cnode
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### configure logging ###
+
+Now ```cardano-node``` is a system managed service, it's time to configure system level logging with ```rsyslog``` and ```logrotate```.
+
+Place the following in ```/etc/rsyslog.d/90-cardano-node.conf```:
+
+```bash
+if $programname == 'cardano-node' then /var/log/cardano-node.log
+& stop
+```
+
+Place the following in ```/etc/logrotate.d/cardano-node```:
+
+```bash
+/var/log/cardano-node.log {
+    daily
+    rotate 30
+    copytruncate
+    compress
+    delaycompress
+    notifempty
+    missingok
+}
+```
+
+Restart the logging services:
+
+```bash
+systemctl restart rsyslog.service
+systemctl restart logrotate.service
+```
+
+Now you can check your logs as for any other service with:
+
+```bash
+journalctl -f -u cardano-node.service
 ```
