@@ -1412,11 +1412,11 @@ With my repo, you also get a number of [dotfiles](files/) that are useful if you
 
 The following shows a ```tmux``` window with some ```itn1_cluster``` going on for each node:
 
-![tmux example 1](images/tmux&#32;1.png)
+![tmux example 1](_images/tmux&#32;1.png)
 
 The following shows a ```tmux``` window with ```htop```, ```cbm```, and some network stats:
 
-![tmux example 2](images/tmux&#32;2.png)
+![tmux example 2](_images/tmux&#32;2.png)
 
 ### ccze ###
 
