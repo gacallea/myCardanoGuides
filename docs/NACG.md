@@ -168,6 +168,9 @@ This should not be necessary, as it is usually the default settings. To be on th
 
 ```bash
 ufw default deny incoming
+```
+
+```bash
 ufw default allow outgoing
 ```
 
@@ -175,6 +178,9 @@ Next, you should decide which ports to use for ```jormungandr``` and ```sshd```.
 
 ```bash
 ufw limit 22
+```
+
+```bash
 ufw limit 5269
 ```
 
@@ -188,6 +194,9 @@ Now that all the necessary rules have been set, let's enable the firewall and do
 
 ```bash
 ufw enable
+```
+
+```bash
 ufw status verbose
 ```
 
@@ -367,103 +376,6 @@ Load your newly configured variables:
 sysctl -p /etc/sysctl.conf
 ```
 
-### configure systemd ###
-
-It is time to manage ```jormungandr``` as you would manage any other service on your server: with ```root``` and ```systemd```. Place the following in ```/etc/systemd/system/jormungandr.service```, and **make sure to change** ```poolrun``` and ```3101``` to match your system:
-
-```bash
-[Unit]
-Description=Shelley Staking Pool
-After=multi-user.target
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/jormungandr --config node-config.yaml --secret node-secret.yaml --genesis-block-hash 8e4d2a343f3dcf9330ad9035b3e8d168e6728904262f2c434a4f8f934ec7b676
-ExecStop=/usr/local/bin/jcli rest v0 shutdown get -h http://127.0.0.1:3101/api
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=jormungandr
-
-LimitNOFILE=32768
-
-Restart=on-failure
-RestartSec=5s
-WorkingDirectory=~
-User=poolrun
-Group=poolrun
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Let's unpack the ```unit``` file:
-
-1. it runs ```jormungandr``` as ```poolrun```.
-2. it looks ```node-*.yaml``` in  ```poolrun``` home directory
-3. it provides for  ```systemctl``` start, stop and restart.
-4. it restarts ```jormungandr``` on failures
-5. it logs to ```journal```.
-6. it sets the limits accordingly.
-
-Reload ```systemd``` to read the new ```unit``` file, and enable it.
-
-```bash
-systemctl daemon-reload
-systemctl enable jormungandr.service
-```
-
-Whenever you need to ```start```, ```stop```, and ```restart``` your node, do it with:
-
-```bash
-systemctl start jormungandr.service
-```
-
-```bash
-systemctl stop jormungandr.service
-```
-
-```bash
-systemctl restart jormungandr.service
-```
-
-### configure logging ###
-
-Now ```jormungandr``` is a system managed service, it's time to configure system level logging with ```rsyslog``` and ```logrotate```.
-
-Place the following in ```/etc/rsyslog.d/90-jormungandr.conf```:
-
-```bash
-if $programname == 'jormungandr' then /var/log/jormungandr.log
-& stop
-```
-
-Place the following in ```/etc/logrotate.d/jormungandr```:
-
-```bash
-/var/log/jormungandr.log {
-    daily
-    rotate 30
-    copytruncate
-    compress
-    delaycompress
-    notifempty
-    missingok
-}
-```
-
-Restart the logging services:
-
-```bash
-systemctl restart rsyslog.service
-systemctl restart logrotate.service
-```
-
-Now you can check your logs as for any other service with:
-
-```bash
-journalctl -f -u jormungandr.service
-```
-
 ### configure node ###
 
 Now that you have configured your server, hosting your pool, you may consider using my ```node-config.yaml```. It was refined every single day until my node run smoothly (for a testing stage software like ```jormungandr``` is as of this writing). This step is **completely optional**, feel free to skip it and trust your own experience and configuration.
@@ -556,6 +468,103 @@ bootstrap_from_trusted_peers: false
 ```
 
 Restart ```jormungandr``` to use the new configuration:
+
+```bash
+systemctl restart jormungandr.service
+```
+
+### configure logging ###
+
+Now ```jormungandr``` is a system managed service, it's time to configure system level logging with ```rsyslog``` and ```logrotate```.
+
+Place the following in ```/etc/rsyslog.d/90-jormungandr.conf```:
+
+```bash
+if $programname == 'jormungandr' then /var/log/jormungandr.log
+& stop
+```
+
+Place the following in ```/etc/logrotate.d/jormungandr```:
+
+```bash
+/var/log/jormungandr.log {
+    daily
+    rotate 30
+    copytruncate
+    compress
+    delaycompress
+    notifempty
+    missingok
+}
+```
+
+Restart the logging services:
+
+```bash
+systemctl restart rsyslog.service
+systemctl restart logrotate.service
+```
+
+Now you can check your logs as for any other service with:
+
+```bash
+journalctl -f -u jormungandr.service
+```
+
+### configure systemd ###
+
+It is time to manage ```jormungandr``` as you would manage any other service on your server: with ```root``` and ```systemd```. Place the following in ```/etc/systemd/system/jormungandr.service```, and **make sure to change** ```poolrun``` and ```3101``` to match your system:
+
+```bash
+[Unit]
+Description=Shelley Staking Pool
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/jormungandr --config node-config.yaml --secret node-secret.yaml --genesis-block-hash 8e4d2a343f3dcf9330ad9035b3e8d168e6728904262f2c434a4f8f934ec7b676
+ExecStop=/usr/local/bin/jcli rest v0 shutdown get -h http://127.0.0.1:3101/api
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=jormungandr
+
+LimitNOFILE=32768
+
+Restart=on-failure
+RestartSec=5s
+WorkingDirectory=~
+User=poolrun
+Group=poolrun
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Let's unpack the ```unit``` file:
+
+1. it runs ```jormungandr``` as ```poolrun```.
+2. it looks ```node-*.yaml``` in  ```poolrun``` home directory
+3. it provides for  ```systemctl``` start, stop and restart.
+4. it restarts ```jormungandr``` on failures
+5. it logs to ```journal```.
+6. it sets the limits accordingly.
+
+Reload ```systemd``` to read the new ```unit``` file, and enable it.
+
+```bash
+systemctl daemon-reload
+systemctl enable jormungandr.service
+```
+
+Whenever you need to ```start```, ```stop```, and ```restart``` your node, do it with:
+
+```bash
+systemctl start jormungandr.service
+```
+
+```bash
+systemctl stop jormungandr.service
+```
 
 ```bash
 systemctl restart jormungandr.service
@@ -704,6 +713,8 @@ Grafana by default runs on port ```3000```. If ```jormungandr``` is running on p
 
 The Grafana configuration has pretty solid default values. You only need to change a handful to successfully configure it. Here, ```grafana.example.com``` is used as an example, you can use whatever suits you to replace the ```grafana.``` bit (for instance ```monitoring.```). However, **the domain has to match your actual domain**. Here's what needs changing (in which blocks):
 
+Edit /etc/grafana/grafana.ini. Here's what needs changing (look for the respective **[blocks]**):
+
 ##### [server] #####
 
 ```bash
@@ -806,7 +817,13 @@ Enable it:
 
 ```bash
 cd /etc/nginx/sites-enabled/
+```
+
+```bash
 ln -sf ../sites-available/grafana
+```
+
+```bash
 systemctl restart nginx.service
 ```
 
@@ -822,7 +839,7 @@ If you need a more detailed guide to help you with ```certbot```, Digital Ocean 
 
 When you get to this point:
 
-```bash
+```text
 Please choose whether or not to redirect HTTP traffic to HTTPS, removing HTTP access.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 1: No redirect - Make no further changes to the webserver configuration.
@@ -835,7 +852,7 @@ Select the appropriate number [1-2] then [enter] (press 'c' to cancel):
 
 Choose option ```1```, since your ```/etc/nginx/sites-available/grafana``` already includes a proper redirection. If you accidentally chose option ```2```, remove these lines from your configuration:
 
-```bash
+```text
 if ($host = grafana.example.com) {
   return 301 https://$host$request_uri;
 } # managed by Certbot
@@ -849,6 +866,16 @@ Restart Nginx with:
 systemctl restart nginx.service
 ```
 
+#### Prometheus Data Source ####
+
+It's time to tell Grafana to use Prometheus. Connect to Grafana by browsing to ```https://grafana.example.com```. Login with the default credentials (user: ```admin```, password: ```admin```). Upon a successful login, you will be asked to create a new password for the admin user.
+
+Now browse to ```https://grafana.example.com/datasources```, and search and install the Prometheus datasource. If you need help, refer to the [official documentation](https://grafana.com/docs/grafana/latest/features/datasources/prometheus/#adding-the-data-source). **Make it the default data source, and add the localhost information as well.**
+
+![datasource](_images/datasource.png)
+
+![editprometheus](_images/promedit.png)
+
 #### Installing Dashboards ####
 
 It is now time to connect to Grafana by browsing to ```https://grafana.example.com```. Login with the default credentials (user: ```admin```, password: ```admin```). Upon a successful login, you will be asked to create a new password for the admin user.
@@ -857,6 +884,8 @@ It is time to install two dashboards. No need to reinvent the wheel here, please
 
 - Node Exporter Dashboard: [https://grafana.com/grafana/dashboards/1860](https://grafana.com/grafana/dashboards/1860)
 - Jormungandr Dashboard: [gacallea/cardanoRelatedStuff/master/monitoring/jormungandr-monitor.json](https://raw.githubusercontent.com/gacallea/cardanoRelatedStuff/master/monitoring/jormungandr-monitor.json)
+
+**IMPORTANT: give Prometheus and the two exporters some time to collect data and generate metrics. Don't panic if your Grafana dashboards will be empty at first. As long as the are no errors.**
 
 ## What's Next ##
 
