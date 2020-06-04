@@ -1,5 +1,3 @@
-<!-- docs/_sidebar.md -->
-
-* [Shelley Notes - Haskell Node](ShelleyNotes.md)
-* [NACG - Jormungandr](oldguides/NACG.md)
-* [ITN1 Cluster - Jormungandr](oldguides/ITN1_CLUSTER.md)
+* [Shelley - Cardano Node and Relays](ShelleyMainnetPool.md)
+* [ITN1 - Jormungandr Cluster](ITN1_CLUSTER.md)
+* [NACG - Jormungandr Node](NACG.md)
