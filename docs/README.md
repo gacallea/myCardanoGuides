@@ -4,13 +4,19 @@ Hereby collected, my humble contributions to the Cardano ecosystem. A set of det
 
 ## The Guides ##
 
+In chronological order:
+
 ### Not Another Cardano Guide ###
 
-```Not Another Cardano Guide``` it's a guide that will help you setup a **single-Jormungandr-node** pool with Ubuntu 20.04 LTS.
+```Not Another Cardano Guide``` it's a guide that will help you setup a **single-Jormungandr-node** pool with Ubuntu 20.04 LTS. ```NACG``` set of scripts is available [here](https://github.com/gacallea/cardanoRelatedStuff/).
 
 ### ITN1 Cluster ###
 
-```ITN1 Cluster``` builds upon, extends, and supersedes the ```Not Another Cardano Guide```. ```NACG``` focused on a single Jormungandr node. ```ITN1 Cluster``` helps you install, configure, automate and manage a three nodes cluster pool **on the same server**.
+```ITN1 Cluster``` it's a guide that will help you setup a **three-Jormungandr-nodes** cluster pool **on the same server** with Ubuntu 20.04 LTS. ```ITN1 Cluster``` set of scripts is available [here](https://github.com/gacallea/itn1_cluster/).
+
+### Shelley Guide Coming Soon ###
+
+```Shelley - Node and Relays``` is nothing more than personal notes at the minute. It will eventually be a fully-fledged guide. Stay tuned.
 
 ## License ##
 
@@ -22,7 +28,9 @@ It would be impossible to cover every single scenario that a user could come up 
 
 ## Updates ##
 
-Updates are implemented only after they have been tested on my pool. Sections are added to the guide as needed. The same goes for useful features in the pool management scripts. Follow [insaladaPool](https://twitter.com/insaladaPool) for updates.
+Updates are implemented only after they have been tested on my pool. Sections are added to the guide as needed. The same goes for useful features in the pool management scripts.
+
+Follow [insaladaPool](https://twitter.com/insaladaPool) for updates.
 
 ## Contributions ##
 
