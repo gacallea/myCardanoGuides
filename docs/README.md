@@ -4,7 +4,7 @@ Hereby collected, in chronological order, my humble contributions to the Cardano
 
 ## Not Another Cardano Guide ##
 
-```Not Another Cardano Guide``` it's a guide that will help you setup a **single-Jormungandr-node** pool. ```NACG``` set of scripts is available [here](https://github.com/gacallea/cardanoRelatedStuff/).
+```Not Another Cardano Guide``` it's a guide that will help you setup a **single-Jormungandr-node** pool. ```NACG``` set of scripts is available [here](https://github.com/gacallea/nacg/).
 
 ## ITN1 Cluster ##
 

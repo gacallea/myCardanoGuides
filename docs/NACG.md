@@ -897,11 +897,11 @@ One thing I can help you with, is to provide you with tools that will help you m
 
 ```jor_wrapper``` and ```node_helpers``` are a set of ```bash``` scripts to help pool operators manage their nodes. These spun off [Chris G ```.bash_profile```](https://github.com/Chris-Graffagnino/Jormungandr-for-Newbs/blob/master/config/.bash_profile). I have *ported them to bash (scripts)*, improved some of the commands, adapted others to the ```NACG``` guide setup, and implemented brand new features and scripts.
 
-Head over to the [**scripts page**](https://github.com/gacallea/cardanoRelatedStuff/blob/master/SCRIPTS.md) to learn about ```jor_wrapper``` and the ```node_helpers```. In there, you will also find suggested server management commands and tools, examples, teaser screenshots, and more resources. Follow [**insaladaPool**](https://twitter.com/insaladaPool)  on Twitter for future updates.
+Head over to the [**scripts page**](https://github.com/gacallea/nacg/blob/master/SCRIPTS.md) to learn about ```jor_wrapper``` and the ```node_helpers```. In there, you will also find suggested server management commands and tools, examples, teaser screenshots, and more resources. Follow [**insaladaPool**](https://twitter.com/insaladaPool)  on Twitter for future updates.
 
 ### Operator Resources ###
 
-There a number of useful community created tools, guides, [scripts](https://github.com/gacallea/cardanoRelatedStuff/blob/master/SCRIPTS.md), and sites, that can be very helpful for a pool operator. Hereby you find a constantly updated collection of what can be useful to a pool operator. If you are aware of more useful pool operators tools, please be kind and suggest them in an [issue](https://github.com/gacallea/cardanoRelatedStuff/issues) on Github, for inclusion.
+There a number of useful community created tools, guides, [scripts](https://github.com/gacallea/nacg/blob/master/SCRIPTS.md), and sites, that can be very helpful for a pool operator. Hereby you find a constantly updated collection of what can be useful to a pool operator. If you are aware of more useful pool operators tools, please be kind and suggest them in an [issue](https://github.com/gacallea/nacg/issues) on Github, for inclusion.
 
 #### Pool Tool ####
 
