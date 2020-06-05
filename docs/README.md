@@ -16,7 +16,7 @@ In chronological order:
 
 ### Shelley Guide Coming Soon ###
 
-```Shelley - Node and Relays``` is nothing more than personal notes at the minute. It will eventually be a fully-fledged guide. Stay tuned.
+I'm developing some notes based on the Pioneer Shelley experience. There is nothing more than personal notes at the minute. It will eventually be a fully-fledged guide. Stay tuned.
 
 ## License ##
 
