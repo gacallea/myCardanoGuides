@@ -1,20 +1,16 @@
 # Guides For Cardano Pool Ops #
 
-Hereby collected, my humble contributions to the Cardano ecosystem. A set of detailed guides, with custom scripts, to help you install, configure, manage, automate, and monitor a  Cardano pool.
+Hereby collected, in chronological order, my humble contributions to the Cardano ecosystem. A set of detailed guides, with custom scripts, to help you install, configure, manage, automate, and monitor a Cardano pool. The system used in the guides is now the latest Ubuntu [20.04 LTS](https://help.ubuntu.com/lts/ubuntu-help/index.html).
 
-## The Guides ##
+## Not Another Cardano Guide ##
 
-In chronological order:
+```Not Another Cardano Guide``` it's a guide that will help you setup a **single-Jormungandr-node** pool. ```NACG``` set of scripts is available [here](https://github.com/gacallea/cardanoRelatedStuff/).
 
-### Not Another Cardano Guide ###
+## ITN1 Cluster ##
 
-```Not Another Cardano Guide``` it's a guide that will help you setup a **single-Jormungandr-node** pool with Ubuntu 20.04 LTS. ```NACG``` set of scripts is available [here](https://github.com/gacallea/cardanoRelatedStuff/).
+```ITN1 Cluster``` it's a guide that will help you setup a **three-Jormungandr-nodes** cluster pool **on the same server**. ```ITN1 Cluster``` set of scripts is available [here](https://github.com/gacallea/itn1_cluster/).
 
-### ITN1 Cluster ###
-
-```ITN1 Cluster``` it's a guide that will help you setup a **three-Jormungandr-nodes** cluster pool **on the same server** with Ubuntu 20.04 LTS. ```ITN1 Cluster``` set of scripts is available [here](https://github.com/gacallea/itn1_cluster/).
-
-### Shelley Guide Coming Soon ###
+## Shelley Guide Coming Soon ##
 
 I'm developing some notes based on the Pioneer Shelley experience. There is nothing more than personal notes at the minute. It will eventually be a fully-fledged guide. Stay tuned.
 

@@ -13,10 +13,6 @@
       rel="stylesheet"
       href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css"
     />
-    <!-- <link
-      rel="stylesheet"
-      href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css"
-    /> -->
   </head>
   <body>
     <div id="app">Loading...</div>
@@ -32,21 +28,17 @@
         mergeNavbar: true,
         coverpage: true,
         auto2top: true,
-        // onlyCover: true,
         markdown: {
           smartypants: true,
         },
-        // themeColor: "#3F51B5",
-        // formatUpdated: "{MM}/{DD} {HH}:{mm}",
         search: "auto",
         search: {
-          maxAge: 86400000, // Expiration time, the default one day
+          maxAge: 86400000,
           paths: "auto",
           placeholder: "Type to search",
           noData: "No Results!",
-          // Headline depth, 1 - 6
           depth: 5,
-          hideOtherSidebarContent: false, // whether or not to hide other sidebar content
+          hideOtherSidebarContent: false,
         },
       };
     </script>
@@ -57,25 +49,7 @@
     <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-bash.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-yaml.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-json.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-docker.min.js"></script>
-
-    <!--
-    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/gitalk.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
-
-    <script>
-      const gitalk = new Gitalk({
-        clientID: "Github Application Client ID",
-        clientSecret: "Github Application Client Secret",
-        repo: "Github repo",
-        owner: "Github repo owner",
-        admin: [
-          "Github repo collaborators, only these guys can initialize github issues",
-        ],
-        // facebook-like distraction free mode
-        distractionFreeMode: false,
-      });
-    </script>
- -->
   </body>
 </html>
