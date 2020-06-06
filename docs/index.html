@@ -51,5 +51,10 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-yaml.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-json.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-docker.min.js"></script>
+    <script>
+      if (typeof navigator.serviceWorker !== "undefined") {
+        navigator.serviceWorker.register("sw.js");
+      }
+    </script>
   </body>
 </html>
