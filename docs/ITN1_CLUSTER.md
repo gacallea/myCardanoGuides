@@ -277,11 +277,11 @@ cd /root/itn1_cluster_repo/itn1_cluster/scripts/itn1_helpers/
 You should stick [to the latest stable release](https://github.com/input-output-hk/jormungandr/releases), unless it introduces regressions. The following works for the **current release** for a ```x86_64``` architecture (PC/Mac - Intel/AMD Server) and [GNU](https://www.gnu.org/) ```glibc```.
 
 ```bash
-curl -sLOJ https://github.com/input-output-hk/jormungandr/releases/download/v0.8.19/jormungandr-v0.8.19-x86_64-unknown-linux-gnu-generic.tar.gz
+curl -sLOJ https://github.com/input-output-hk/jormungandr/releases/download/v0.9.0/jormungandr-v0.9.0-x86_64-unknown-linux-gnu-generic.tar.gz
 ```
 
 ```bash
-tar xzvf jormungandr-v0.8.19-x86_64-unknown-linux-gnu-generic.tar.gz
+tar xzvf jormungandr-v0.9.0-x86_64-unknown-linux-gnu-generic.tar.gz
 ```
 
 ```bash
@@ -567,7 +567,6 @@ log:
 p2p:
   listen_address: "/ip4/0.0.0.0/tcp/3001"
   public_address: "/ip4/8.8.8.8/tcp/3001"
-  public_id: 24c09ad96217a8ae3ddbaacca753d3466729d6f6d9b6e454
   topics_of_interest:
     blocks: high
     messages: high
@@ -579,28 +578,12 @@ p2p:
   policy:
     quarantine_duration: 15m
   trusted_peers:
-    - address: "/ip4/8.8.8.8/tcp/3002"
-      id: cb20e4eda3eda2c6738e94f4134295a44faf148645479444
-    - address: "/ip4/8.8.8.8/tcp/3003"
-      id: da24978fd12d10551293de47f0520a8fbd57c305c0f6070d
-    - address: "/ip4/13.56.0.226/tcp/3000"
-      id: 7ddf203c86a012e8863ef19d96aabba23d2445c492d86267
-    - address: "/ip4/54.183.149.167/tcp/3000"
-      id: df02383863ae5e14fea5d51a092585da34e689a73f704613
-    - address: "/ip4/52.9.77.197/tcp/3000"
-      id: fcdf302895236d012635052725a0cdfc2e8ee394a1935b63
-    - address: "/ip4/18.177.78.96/tcp/3000"
-      id: fc89bff08ec4e054b4f03106f5300034abdf2fcb444610e9
-    - address: "/ip4/3.115.154.161/tcp/3000"
-      id: 35bead7d45b3b8bda5e74aa12126d871069e7617b7f4fe62
-    - address: "/ip4/18.182.115.51/tcp/3000"
-      id: 8529e334a39a5b6033b698be2040b1089d8f67e0102e2575
-    - address: "/ip4/18.184.35.137/tcp/3000"
-      id: 06aa98b0ab6589f464d08911717115ef354161f0dc727858
-    - address: "/ip4/3.125.31.84/tcp/3000"
-      id: 8f9ff09765684199b351d520defac463b1282a63d3cc99ca
-    - address: "/ip4/3.125.183.71/tcp/3000"
-      id: 9d15a9e2f1336c7acda8ced34e929f697dc24ea0910c3e67
+    - address: "/ip4/91.121.100.32/tcp/3001" #SALAD 2
+    - address: "/ip4/91.121.100.32/tcp/3002" #SALAD 2
+    - address: "/ip4/91.121.100.32/tcp/3003" #SALAD 3
+    - address: "/ip4/82.209.54.76/tcp/3000" #BLTNA
+    - address: "/ip4/82.209.54.76/tcp/4000" #BLTNB
+    - address: "/ip4/46.36.37.145/tcp/3000" #DOLCA
 rest:
   listen: 127.0.0.1:3101
 storage: "/home/pooldozer/itn1_node_1/storage"
