@@ -264,3 +264,22 @@ Now you can check your logs as for any other service with:
 ```bash
 journalctl -f -u cardano-node.service
 ```
+
+```json
+{
+  "Producers": [
+    { "addr": "10.133.136.149",                   "port": 3000, "valency": 1, "operator": "SALAD CORE NODE" },
+    { "addr": "relays-new.ff.dev.cardano.org",    "port": 3001, "valency": 2 , "operator": "IOHK"},
+    { "addr": "relays.ada4profit.com",            "port": 4321, "valency": 2, "operator": "@ada4profit" },
+    { "addr": "relays.stakepool.at",              "port": 3001, "valency": 2, "operator": "atada_stakepool", "node": "ATADA" },
+    { "addr": "relay01.hyperborea-networks.com",  "port": 5001, "valency": 1, "operator": "Hermespool Relay01" },
+    { "addr": "relay02.hyperborea-networks.com",  "port": 5001, "valency": 1, "operator": "Hermespool Relay02" },
+    { "addr": "relays.ff.crypto2099.io",          "port": 3001, "valency": 2, "operator": "SPIKE, Crypto2099, Corp." },
+    { "addr": "relays.ff.titanstaking.io",        "port": 4321, "valency": 2, "operator": "@TITANstaking @marcelbaumberg" },
+    { "addr": "194.32.79.182",                    "port": 3001, "valency": 1, "operator": "Chris-Graffagnino"},
+    { "addr": "htn.lunarpool.io",                 "port": 3001, "valency": 1, "operator": "MOON9 - lunarpool.io"},
+    { "addr": "r1.dolcapool.eu",                  "port": 7777, "valency": 1, "operator": "DOLCA1" },
+    { "addr": "relay1.radarstakepool.com",        "port": 3002, "valency": 1, "operator": "Gryph, rADArStakePool, @poolradar" }
+  ]
+}
+```
