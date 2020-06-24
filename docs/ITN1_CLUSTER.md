@@ -277,11 +277,11 @@ cd /root/itn1_cluster_repo/itn1_cluster/scripts/itn1_helpers/
 You should stick [to the latest stable release](https://github.com/input-output-hk/jormungandr/releases), unless it introduces regressions. The following works for the **current release** for a ```x86_64``` architecture (PC/Mac - Intel/AMD Server) and [GNU](https://www.gnu.org/) ```glibc```.
 
 ```bash
-curl -sLOJ https://github.com/input-output-hk/jormungandr/releases/download/v0.9.0/jormungandr-v0.9.0-x86_64-unknown-linux-gnu-generic.tar.gz
+curl -sLOJ https://github.com/input-output-hk/jormungandr/releases/download/v0.9.0/jormungandr-0.9.0-x86_64-unknown-linux-musl-generic.tar.gz
 ```
 
 ```bash
-tar xzvf jormungandr-v0.9.0-x86_64-unknown-linux-gnu-generic.tar.gz
+tar xzvf jormungandr-0.9.0-x86_64-unknown-linux-gnu-generic.tar.gz
 ```
 
 ```bash
