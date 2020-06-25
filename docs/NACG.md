@@ -115,11 +115,11 @@ apt-get update && apt-get install -y bc cbm ccze chrony curl dateutils fail2ban 
 You should stick [to the latest stable release](https://github.com/input-output-hk/jormungandr/releases), unless it introduces regressions. The following works for the current release for a ```x86_64``` architecture (PC/Mac - Intel/AMD Server) and [GNU](https://www.gnu.org/) ```glibc```.
 
 ```bash
-curl -sLOJ https://github.com/input-output-hk/jormungandr/releases/download/v0.9.0/jormungandr-0.9.0-x86_64-unknown-linux-musl-generic.tar.gz
+curl -sLOJ https://github.com/input-output-hk/jormungandr/releases/download/v0.9.1/jormungandr-0.9.1-x86_64-unknown-linux-musl-generic.tar.gz
 ```
 
 ```bash
-tar xzvf jormungandr-0.9.0-x86_64-unknown-linux-gnu-generic.tar.gz
+tar xzvf jormungandr-0.9.1-x86_64-unknown-linux-gnu-generic.tar.gz
 ```
 
 ```bash
