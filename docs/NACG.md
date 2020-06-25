@@ -401,6 +401,8 @@ For reference only, my node has the following specs:
 
 Should you decide to use it, place the following in ```/home/poolrun/node-config.yaml```. The only adjustment you should take care of, **besides changing the variables to match your system**, is to change the ```trusted_peers``` order to place the nearest to you at the top of the list.
 
+**NOTE: For an up to date peers list on the ITNv2 visit: [https://gist.github.com/mark-stopka/377242ca2018590b20852dc8407db49a](https://gist.github.com/mark-stopka/377242ca2018590b20852dc8407db49a)**
+
 ```bash
 ---
 log:
@@ -427,14 +429,19 @@ p2p:
     - address: "/ip4/82.209.54.76/tcp/3000" #BLTNA
     - address: "/ip4/82.209.54.76/tcp/4000" #BLTNB
     - address: "/ip4/46.36.37.145/tcp/3000" #DOLCA
+    - address: "/ip4/45.153.186.205/tcp/3100" #MASTR
+    - address: "/ip4/45.153.186.205/tcp/3101" #MASTR
+    - address: "/ip4/92.223.88.41/tcp/3001" #CEMA1 1
+    - address: "/ip4/92.223.88.41/tcp/3002" #CEMA1 2
+    - address: "/ip4/92.223.88.41/tcp/3003" #CEMA1 3
+    - address: "/ip4/62.171.167.84/tcp/3300" #ADALO
+    - address: "/ip4/62.171.167.85/tcp/4300" #ADALO
+    - address: "/ip4/62.171.167.86/tcp/5300" #ADALO
+    - address: "/ip4/78.46.204.19/tcp/3000" #ADAGO
+    - address: "/ip4/35.225.175.215/tcp/3000" #UNION
 rest:
   listen: 127.0.0.1:3101
 storage: "/home/poolrun/"
-mempool:
-    pool_max_entries: 10000
-    log_max_entries: 100000
-leadership:
-    logs_capacity: 4096
 http_fetch_block0_service:
 - "https://github.com/input-output-hk/jormungandr-block0/raw/master/data/"
 skip_bootstrap: false
