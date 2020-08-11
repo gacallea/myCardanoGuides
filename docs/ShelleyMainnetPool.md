@@ -110,33 +110,32 @@ scp cardano-bins/bin/cardano-node relay-server:/usr/local/bin/
 scp cardano-bins/bin/cardano-cli relay-server:/usr/local/bin/
 ```
 
-#### cardano-relay home dir ####
+### cardano-relay home dir ###
 
 ```bash
-root@htn-cardano-relay:~# tree /home/cardano-node/
 /home/cardano-node/
 ├── cardano-node.env
 ├── config
-│   ├── ff-config.json
-│   ├── ff-genesis.json
-│   └── ff-topology.json
+│   ├── config.json
+│   ├── genesis.json
+│   └── topology.json
 ├── db
 ├── logs
 └── socket
 ```
 
-#### cardano-relay environment ####
+### cardano-relay environment ###
 
 ```bash
-CONFIG="./config/ff-config.json"
-TOPOLOGY="./config/ff-topology.json"
+CONFIG="./config/config.json"
+TOPOLOGY="./config/topology.json"
 DBPATH="./db/"
-SOCKETPATH="./socket/core-node.socket"
+SOCKETPATH="./socket/node.socket"
 HOSTADDR="0.0.0.0"
 PORT="3000"
 ```
 
-#### cardano-relay.service ####
+### cardano-relay.service ###
 
 ```bash
 [Unit]
@@ -145,7 +144,7 @@ After=multi-user.target
 
 [Service]
 Type=simple
-EnvironmentFile=/home/cardano-node/cardano-node.env
+EnvironmentFile=/home/cardano-node/cardano-relay.env
 ExecStart=/usr/local/bin/cardano-node run --config $CONFIG --topology $TOPOLOGY --database-path $DBPATH --socket-path $SOCKETPATH --host-addr $HOSTADDR --port $PORT
 KillSignal = SIGINT
 RestartKillSignal = SIGINT
@@ -165,16 +164,15 @@ Group=cnode
 WantedBy=multi-user.target
 ```
 
-#### cardano-node home dir ####
+### cardano-node home dir ###
 
 ```bash
-root@htn-cardano-node:~# tree /home/cardano-node/
 /home/cardano-node/
 ├── cardano-node.env
 ├── config
-│   ├── ff-config.json
-│   ├── ff-genesis.json
-│   └── ff-topology.json
+│   ├── topology.json
+│   ├── config.json
+│   └── genesis.json
 ├── db
 ├── keys
 │   ├── kes.skey
@@ -184,13 +182,13 @@ root@htn-cardano-node:~# tree /home/cardano-node/
 └── socket
 ```
 
-#### cardano-node environment ####
+### cardano-node environment ###
 
 ```bash
-CONFIG="./config/ff-config.json"
-TOPOLOGY="./config/ff-topology.json"
+CONFIG="./config/config.json"
+TOPOLOGY="./config/topology.json"
 DBPATH="./db/"
-SOCKETPATH="./socket/core-node.socket"
+SOCKETPATH="./socket/node.socket"
 HOSTADDR="0.0.0.0"
 PORT="3000"
 KES_SK="./keys/kes.skey"
@@ -198,7 +196,7 @@ VRF_SK="./keys/vrf.skey"
 OPCERT="./keys/opcert"
 ```
 
-#### cardano-node.service ####
+### cardano-node.service ###
 
 ```bash
 [Unit]
@@ -264,6 +262,54 @@ Now you can check your logs as for any other service with:
 ```bash
 journalctl -f -u cardano-node.service
 ```
+
+## Firewall ##
+
+### ufw node ###
+
+```bash
+root@salad-shelley-node:~/scripts# ufw status verbose
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+2249                       LIMIT IN    Anywhere
+3000 on eth1               ALLOW IN    Anywhere
+9101 on eth1               ALLOW IN    Anywhere
+9100 on eth1               ALLOW IN    Anywhere
+2249 (v6)                  LIMIT IN    Anywhere (v6)
+3000 (v6) on eth1          ALLOW IN    Anywhere (v6)
+9101 (v6) on eth1          ALLOW IN    Anywhere (v6)
+9100 (v6) on eth1          ALLOW IN    Anywhere (v6)
+```
+
+### ufw relay ###
+
+```bash
+root@salad-shelley-relay-01:~# ufw status verbose
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+3001                       ALLOW IN    Anywhere
+2249                       LIMIT IN    Anywhere
+9101 on eth1               ALLOW IN    Anywhere
+3001 on eth1               ALLOW IN    Anywhere
+9100 on eth1               ALLOW IN    Anywhere
+3001 (v6)                  ALLOW IN    Anywhere (v6)
+2249 (v6)                  LIMIT IN    Anywhere (v6)
+9101 (v6) on eth1          ALLOW IN    Anywhere (v6)
+3001 (v6) on eth1          ALLOW IN    Anywhere (v6)
+9100 (v6) on eth1          ALLOW IN    Anywhere (v6)
+```
+
+## Example Topology ##
 
 ```json
 {
