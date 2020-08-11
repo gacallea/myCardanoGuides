@@ -12,7 +12,7 @@ Hereby collected, in chronological order, my humble contributions to the Cardano
 
 ## Shelley Guide Coming Soon ##
 
-I'm developing some notes based on the Pioneer Shelley experience. There is nothing more than personal notes at the minute. It will eventually be a fully-fledged guide. Stay tuned.
+I'm developing some notes based on my own pool experience. There is nothing more than personal notes at the minute. It will eventually be a fully-fledged guide. Stay tuned.
 
 ## License ##
 
@@ -30,4 +30,4 @@ Follow [insaladaPool](https://twitter.com/insaladaPool) for updates.
 
 ## Contributions ##
 
-**If you have comments, issues, changes, and suggestions, please file an issue on the respective Github pages**. Any insight is valuable and will be considered for integration and improvements. If these resources help you in any way, consider [buying me a beer](https://seiza.com/blockchain/address/Ae2tdPwUPEZHwvuNhu7qGeBcZBTQAwL2SUA49T6CubbQzoxgxyffYJ8VvcW).
+**If you have comments, issues, changes, and suggestions, please file an issue on the respective Github pages**. Any insight is valuable and will be considered for integration and improvements. If these resources help you in any way, consider buying me a beer: ```addr1qx30d4eggp520qq5czqxszk7kvnyep6nvez6h62lphhhlmxte89r4h0lr9m22uzdnw6wm3w86ce8qjgag8wyzlsx0dtssk7uly```
