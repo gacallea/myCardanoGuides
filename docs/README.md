@@ -10,10 +10,6 @@ Hereby collected, in chronological order, my humble contributions to the Cardano
 
 ```ITN1 Cluster``` it's a guide that will help you setup a **three-Jormungandr-nodes** cluster pool **on the same server**. ```ITN1 Cluster``` set of scripts is available [here](https://github.com/gacallea/itn1_cluster/).
 
-## Shelley Guide Coming Soon ##
-
-I'm developing some notes based on my own pool experience. There is nothing more than personal notes at the minute. It will eventually be a fully-fledged guide. Stay tuned.
-
 ## License ##
 
 These guides are licensed under the terms of a Creative Commons [**CC BY-NC-SA 4.0**](https://creativecommons.org/licenses/by-nc-sa/4.0/). If you are not familiar with Creative Commons licenses, here's a bit [I wrote about them](https://gacallea.info/posts/a-primer-on-linux-open-source-and-copyleft-hackers-included/#creative-commons) that clarify what Creative Commons licenses are about.
@@ -30,4 +26,4 @@ Follow [insaladaPool](https://twitter.com/insaladaPool) for updates.
 
 ## Contributions ##
 
-**If you have comments, issues, changes, and suggestions, please file an issue on the respective Github pages**. Any insight is valuable and will be considered for integration and improvements. If these resources help you in any way, consider buying me a beer: ```addr1qx30d4eggp520qq5czqxszk7kvnyep6nvez6h62lphhhlmxte89r4h0lr9m22uzdnw6wm3w86ce8qjgag8wyzlsx0dtssk7uly```
+**If you have comments, issues, changes, and suggestions, please file an issue on the respective Github pages**. Any insight is valuable and will be considered for integration and improvements. If these resources help you in any way, consider buying me a beer: ```old address is obsolete```

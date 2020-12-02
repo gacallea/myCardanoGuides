@@ -2,8 +2,9 @@
 
 > A collection of guides to help pool operators run their pools
 
-- Install, configure, manage, automate, and monitor a Cardano Pool
-- For both Jormungandr and Cardano Node
+- Install, configure, manage, automate, and monitor a ITN Cardano Pool
+- WARNING: THIS IS OLD STUFF FROM THE ITN TIMES.
+- HERE FOR HISTORIC PURPOSES ONLY
 
 [Get Started](#guides-for-cardano-pool-ops)
 
