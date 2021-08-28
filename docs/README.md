@@ -1,3 +1,5 @@
+**WARNING: THIS IS OLD STUFF FROM THE ITN TIMES. HERE FOR HISTORIC PURPOSES ONLY**
+
 # Guides For Cardano Pool Ops #
 
 Hereby collected, in chronological order, my humble contributions to the Cardano ecosystem. A set of detailed guides, with custom scripts, to help you install, configure, manage, automate, and monitor a Cardano pool. The system used in the guides is now the latest Ubuntu [20.04 LTS](https://help.ubuntu.com/lts/ubuntu-help/index.html).
